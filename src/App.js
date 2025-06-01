@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useFetchData from './components/useFetchData';
+import useFetchData from './context/useFetchData';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import Header from './components/Header';
 import About from './components/About';
@@ -7,7 +7,8 @@ import CarruselProductoServicio from './components/CarruselProductoServicio';
 import Footer from './components/Footer';
 import Faqs from './components/Faqs';
 import Contacto from './components/Contacto';
-import Constantes from './Constantes';
+import Constantes from './context/Constantes';
+import { ContactoProvider } from './context/ContactoContext';
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -28,9 +29,7 @@ function App() {
     },
   });
 
-  const { data, loading, error } = useFetchData(Constantes.urlProductosServicios, {
-    headers: { Authorization: Constantes.tokenBearer }
-  });
+  const { data, loading, error } = useFetchData(Constantes.urlProductosServicios);
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -40,13 +39,15 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-      <About />
-      <CarruselProductoServicio productos={productos} servicios={servicios}/>
-      <Faqs />
-      <Contacto productos={productos} servicios={servicios} />
-      <Footer />
+      <ContactoProvider>
+        <CssBaseline />
+        <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+        <About />
+        <CarruselProductoServicio productos={productos} servicios={servicios}/>
+        <Faqs />
+        <Contacto productos={productos} servicios={servicios} />
+        <Footer />
+      </ContactoProvider>
     </ThemeProvider>
   );
 }

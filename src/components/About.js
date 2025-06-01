@@ -1,12 +1,10 @@
 import { Container, Typography, Box } from '@mui/material';
-import Constantes from '../Constantes';
+import Constantes from '../context/Constantes';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import useFetchData from './useFetchData';
+import useFetchData from '../context/useFetchData';
 
 const About = () => {
-  const { data, loading, error } = useFetchData(Constantes.urlAbout, {
-    headers: { Authorization: Constantes.tokenBearer }
-  });
+  const { data, loading, error } = useFetchData(Constantes.urlAbout);
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error: {error}</div>;

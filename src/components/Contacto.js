@@ -1,5 +1,6 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useContactoContext } from '../context/ContactoContext';
 import {
   Box,
   TextField,
@@ -10,19 +11,30 @@ import {
 } from '@mui/material';
 
 const Contacto = ({ productos = [], servicios = [] }) => {
+  const { itemSeleccionado } = useContactoContext();
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors, isSubmitting, isSubmitSuccessful },
     reset,
+    control
   } = useForm();
+  const consultaValue = watch('consulta') || '';
+  
+  useEffect(() => {
+    if (itemSeleccionado) {
+      console.log('Item seleccionado:', itemSeleccionado);
+      setValue('consulta', itemSeleccionado);
+    }
+  }, [itemSeleccionado, setValue]);
 
   // Obtenemos el valor del mensaje para contador
   const mensajeValue = watch('mensaje', '');
 
   // Honeypot para bots
-  const [botDetected, setBotDetected] = React.useState(false);
+  const [botDetected, setBotDetected] = useState(false);
 
   const onSubmit = (data) => {
     if (data.phone) {
@@ -35,6 +47,19 @@ const Contacto = ({ productos = [], servicios = [] }) => {
 
     reset();
   };
+
+  const opcionesProducto = productos.map((p) => (
+    <MenuItem key={`producto-${p.id}`} value={`producto: ${p.nombre}`}>
+      {p.nombre}
+    </MenuItem>
+  ));
+
+  const opcionesServicio = servicios.map((s) => (
+    <MenuItem key={`servicio-${s.id}`} value={`servicio: ${s.nombre}`}>
+      {s.nombre}
+    </MenuItem>
+  ));
+
 
   return (
     <Box
@@ -85,38 +110,37 @@ const Contacto = ({ productos = [], servicios = [] }) => {
         helperText={errors.email?.message}
       />
 
-      <TextField
-        select
-        label="Consulta sobre"
-        fullWidth
-        margin="normal"
-        defaultValue=""
-        {...register('consulta', { required: 'Selecciona una opción' })}
-        error={!!errors.consulta}
-        helperText={errors.consulta?.message}
-      >
-        <MenuItem value="" disabled>
-          Selecciona...
-        </MenuItem>
-        {productos.length > 0 && (
-          <optgroup label="Productos">
-            {productos.map((p) => (
-              <MenuItem key={p.id} value={`producto: ${p.nombre}`}>
-                {p.nombre}
+      <Controller
+        name="consulta"
+        control={control}
+        rules={{ required: 'Selecciona una opción' }}
+        render={({ field }) => (
+          <TextField
+            select
+            label="Consulta sobre"
+            fullWidth
+            margin="normal"
+            {...field}
+            error={!!errors.consulta}
+            helperText={errors.consulta?.message}
+            value={consultaValue}
+          >
+            {productos.length > 0 && (
+              <MenuItem key="productos-header" disabled>
+                — Productos —
               </MenuItem>
-            ))}
-          </optgroup>
-        )}
-        {servicios.length > 0 && (
-          <optgroup label="Servicios">
-            {servicios.map((s) => (
-              <MenuItem key={s.id} value={`servicio: ${s.nombre}`}>
-                {s.nombre}
+            )}
+            {opcionesProducto}
+
+            {servicios.length > 0 && (
+              <MenuItem key="servicios-header" disabled>
+                — Servicios —
               </MenuItem>
-            ))}
-          </optgroup>
+            )}
+            {opcionesServicio}
+          </TextField>
         )}
-      </TextField>
+      />
 
       {/* Nuevo campo mensaje */}
       <TextField

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import Constantes from '../context/Constantes';
 
-const useFetchData = (url, options = {}) => {
+const useFetchData = (url = {}) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,7 +12,9 @@ const useFetchData = (url, options = {}) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(url, options);
+        const response = await fetch(url, {
+          headers: { Authorization: Constantes.tokenBearer }
+        });
         if (!response.ok) {
           throw new Error(`Error en la petición: ${response.statusText}`);
         }
@@ -29,7 +32,7 @@ const useFetchData = (url, options = {}) => {
     return () => {
       isMounted = false;
     };
-  }, [url, JSON.stringify(options)]); // re-fetch si cambian url u options
+  }, [url]); // re-fetch si cambian url u options
 
   return { data, loading, error };
 };

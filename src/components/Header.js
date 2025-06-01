@@ -22,8 +22,7 @@ const sections = [
   { id: 'productos', label: 'Productos' },
   { id: 'servicios', label: 'Servicios' },
   { id: 'faqs', label: 'Faqs' },
-  { id: 'contacto', label: 'Contacto' },
-  { id: 'footer', label: 'Más información' },
+  { id: 'contacto', label: 'Contacto' }
   // Agrega más secciones si las necesitas
 ];
 
