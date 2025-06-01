@@ -11,23 +11,19 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useContactoContext } from '../context/ContactoContext';
 
 const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
   const [openModal, setOpenModal] = useState(false);
+  const { setItemSeleccionado } = useContactoContext();
 
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
 
-  const handleContactoClick = () => {
+  const handleContactoClick = (e) => {
+    e.stopPropagation();
+    setItemSeleccionado(`${tipo}: ${titulo}`);
     document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
-
-    const select = document.querySelector('select[name="consulta"]');
-    if (select) {
-      const valor = `${tipo}: ${titulo}`;
-      const event = new Event('input', { bubbles: true });
-      select.value = valor;
-      select.dispatchEvent(event);
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -77,8 +73,7 @@ const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
             variant="contained"
             color="primary"
             onClick={(e) => {
-              e.stopPropagation(); // Previene abrir el modal si se clickea el botón
-              handleContactoClick();
+              handleContactoClick(e);
             }}
             aria-label={`Contactar sobre ${titulo}`}
           >
