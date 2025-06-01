@@ -11,15 +11,13 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import Constantes from '../Constantes';
-import useFetchData from './useFetchData';
+import Constantes from '../context/Constantes';
+import useFetchData from '../context/useFetchData';
 
 const Faqs = () => {
   const [expandedId, setExpandedId] = useState(null);
 
-  const { data, loading, error } = useFetchData(Constantes.urlFaqs, {
-    headers: { Authorization: Constantes.tokenBearer }
-  });
+  const { data, loading, error } = useFetchData(Constantes.urlFaqs);
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error: {error}</div>;
