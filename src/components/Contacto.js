@@ -142,7 +142,6 @@ const Contacto = ({ productos = [], servicios = [] }) => {
         )}
       />
 
-      {/* Nuevo campo mensaje */}
       <TextField
         label="Mensaje (opcional)"
         fullWidth
