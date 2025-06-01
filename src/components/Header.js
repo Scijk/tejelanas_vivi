@@ -1,7 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Box,
   Button,
   IconButton,
@@ -11,7 +10,8 @@ import {
   ListItemButton,
   ListItemText,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Link as MuiLink
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
@@ -23,7 +23,6 @@ const sections = [
   { id: 'servicios', label: 'Servicios' },
   { id: 'faqs', label: 'Faqs' },
   { id: 'contacto', label: 'Contacto' }
-  // Agrega más secciones si las necesitas
 ];
 
 const MenuSecciones = ({ onClose }) => (
@@ -48,44 +47,57 @@ const Header = ({ darkMode, setDarkMode }) => {
   };
 
   return (
-    <>
-      <AppBar position="sticky" color="default" elevation={1}>
-        <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>
-            Tejelanas Vivi
-          </Typography>
+    <AppBar position="sticky" color="default" elevation={1}>
+      <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', height: 64 }}>
+        {/* Logo como scroll anchor hacia #top */}
+        <MuiLink
+          href="#"
+          underline="none"
+          aria-label="Ir al inicio de la página"
+          sx={{ display: 'flex', alignItems: 'center', height: '100%' }}
+        >
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Logo Tejelanas Vivi"
+            sx={{ height: '100%', maxHeight: 64 }}
+          />
+        </MuiLink>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {isMobile ? (
-              <>
-                <IconButton onClick={toggleDrawer(true)} color="inherit" aria-label="menu">
-                  <MenuIcon />
-                </IconButton>
-                <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-                  <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-                    <MenuSecciones onClose={toggleDrawer(false)} />
-                  </Box>
-                </Drawer>
-              </>
-            ) : (
-              sections.map((section) => (
-                <Button
-                  key={section.id}
-                  href={`#${section.id}`}
-                  sx={{ color: theme.palette.text.primary }}
-                >
-                  {section.label}
-                </Button>
-              ))
-            )}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {isMobile ? (
+            <>
+              <IconButton onClick={toggleDrawer(true)} color="inherit" aria-label="Abrir menú de navegación">
+                <MenuIcon />
+              </IconButton>
+              <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+                <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+                  <MenuSecciones onClose={toggleDrawer(false)} />
+                </Box>
+              </Drawer>
+            </>
+          ) : (
+            sections.map((section) => (
+              <Button
+                key={section.id}
+                href={`#${section.id}`}
+                sx={{ color: theme.palette.text.primary }}
+              >
+                {section.label}
+              </Button>
+            ))
+          )}
 
-            <IconButton onClick={() => setDarkMode(!darkMode)} color="inherit">
-              {darkMode ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </>
+          <IconButton
+            onClick={() => setDarkMode(!darkMode)}
+            color="inherit"
+            aria-label={darkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+          >
+            {darkMode ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

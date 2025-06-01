@@ -69,7 +69,7 @@ const Contacto = ({ productos = [], servicios = [] }) => {
       sx={{ maxWidth: 400, mx: 'auto', p: 3 }}
       id="contacto"
     >
-      <Typography variant="h5" mb={2}>
+      <Typography variant="h5" mb={2} sx={{ textAlign: 'center' }}>
         Contáctanos
       </Typography>
 
