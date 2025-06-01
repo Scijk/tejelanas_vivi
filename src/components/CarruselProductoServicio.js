@@ -19,16 +19,20 @@ const getResponsiveConfig = (itemCount) => {
 };
 
 const EmptyState = ({ icon: Icon, text }) => (
-  <Box sx={{ my: 4, textAlign: 'center', color: 'text.secondary' }}>
-    <Icon sx={{ fontSize: 60, mb: 1 }} />
+  <Box
+    role="region"
+    aria-label={text}
+    sx={{ my: 4, textAlign: 'center', color: 'text.secondary' }}
+  >
+    <Icon sx={{ fontSize: 60, mb: 1 }} aria-hidden="true" />
     <Typography variant="body1">{text}</Typography>
   </Box>
 );
 
 const CarruselProductoServicio = ({ productos, servicios }) => {
   return (
-    <Container sx={{ py: 6, textAlign: 'center' }}>
-      <Typography id="productos" variant="h5" gutterBottom>
+    <Container component="section" aria-labelledby="productos" sx={{ py: 6, textAlign: 'center' }}>
+      <Typography id="productos" variant="h5" gutterBottom tabIndex={-1}>
         Productos Destacados
       </Typography>
 
@@ -37,7 +41,10 @@ const CarruselProductoServicio = ({ productos, servicios }) => {
           responsive={getResponsiveConfig(productos.length)}
           infinite={productos.length > 4}
           autoPlay
-          autoPlaySpeed={3000}>
+          autoPlaySpeed={3000}
+          itemClass="carousel-item-padding-40-px"
+          aria-label="Carrusel de productos destacados"
+        >
           {productos.map(product => (
             <Box key={product.id} sx={{ px: 2, height: 420 }}>
               <TarjetaItem
@@ -65,7 +72,7 @@ const CarruselProductoServicio = ({ productos, servicios }) => {
         <EmptyState icon={Inventory2OutlinedIcon} text="No hay productos disponibles por el momento." />
       )}
 
-      <Typography id="servicios" variant="h5" gutterBottom sx={{ mt: 8 }}>
+      <Typography id="servicios" variant="h5" gutterBottom sx={{ mt: 8 }} tabIndex={-1}>
         Servicios
       </Typography>
 
@@ -74,7 +81,10 @@ const CarruselProductoServicio = ({ productos, servicios }) => {
           responsive={getResponsiveConfig(servicios.length)}
           infinite={servicios.length > 4}
           autoPlay
-          autoPlaySpeed={3000}>
+          autoPlaySpeed={3000}
+          itemClass="carousel-item-padding-40-px"
+          aria-label="Carrusel de servicios"
+        >
           {servicios.map(service => (
             <Box key={service.id} sx={{ px: 2, height: 420 }}>
               <TarjetaItem

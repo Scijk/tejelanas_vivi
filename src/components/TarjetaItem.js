@@ -11,19 +11,30 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useContactoContext } from '../context/ContactoContext';
 
 const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
   const [openModal, setOpenModal] = useState(false);
-  const { setItemSeleccionado } = useContactoContext();
 
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
 
-  const handleContactoClick = (e) => {
-    e.stopPropagation();
-    setItemSeleccionado(`${tipo}: ${titulo}`);
+  const handleContactoClick = () => {
     document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
+
+    const select = document.querySelector('select[name="consulta"]');
+    if (select) {
+      const valor = `${tipo}: ${titulo}`;
+      const event = new Event('input', { bubbles: true });
+      select.value = valor;
+      select.dispatchEvent(event);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleModalOpen();
+    }
   };
 
   return (
@@ -35,15 +46,20 @@ const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          outline: 'none'
         }}
         onClick={handleModalOpen}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
+        aria-label={`Abrir imagen de ${titulo}`}
       >
         <CardMedia
           component="img"
           height="160"
           image={imagen}
-          alt={titulo}
+          alt={`Imagen de ${titulo}`}
           sx={{ objectFit: 'cover' }}
         />
         <CardContent sx={{ flexGrow: 1 }}>
@@ -61,8 +77,10 @@ const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
             variant="contained"
             color="primary"
             onClick={(e) => {
-              handleContactoClick(e);
+              e.stopPropagation(); // Previene abrir el modal si se clickea el botón
+              handleContactoClick();
             }}
+            aria-label={`Contactar sobre ${titulo}`}
           >
             Contáctanos
           </Button>
@@ -75,6 +93,8 @@ const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{ timeout: 500 }}
+        aria-labelledby={`modal-${titulo}`}
+        aria-describedby={`modal-desc-${titulo}`}
       >
         <Fade in={openModal}>
           <Box
@@ -90,7 +110,7 @@ const TarjetaItem = ({ tipo, titulo, descripcion, imagen, extraInfo }) => {
           >
             <img
               src={imagen}
-              alt={titulo}
+              alt={`Ampliación de ${titulo}`}
               style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: 8 }}
             />
           </Box>
